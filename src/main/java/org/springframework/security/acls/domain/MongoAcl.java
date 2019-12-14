@@ -89,13 +89,15 @@ public class MongoAcl {
 	 * @param id         The unique identifier of this access control list
 	 */
 	public MongoAcl(Serializable instanceId, String className, Serializable id) {
-		this.id = id;
-		this.instanceId = instanceId;
-		this.className = className;
-		// assign the user who created the object as owner
-
-		String ownerName = SecurityContextHolder.getContext().getAuthentication().getName();
-		this.owner = new MongoSid(ownerName);
+		this(
+				instanceId,
+				className,
+				id,
+				// assign the user who created the object as owner
+				new MongoSid(SecurityContextHolder.getContext().getAuthentication().getName()),
+				null,
+				true
+		);
 	}
 
 	/**
@@ -114,7 +116,9 @@ public class MongoAcl {
 	 */
 	public MongoAcl(Serializable instanceId, String className, Serializable id, MongoSid owner,
 					Serializable parentId, boolean entriesInheriting) {
-		this(instanceId, className, id);
+		this.id = id;
+		this.instanceId = instanceId;
+		this.className = className;
 		this.parentId = parentId;
 		this.owner = owner;
 		this.inheritPermissions = entriesInheriting;
